@@ -1,4 +1,4 @@
-from character import Warrior,Mage,Thief,Dice, Character
+from character import Warrior,Mage,Thief,Dice, Character,Archer
 from dice import Dice
 import random
 from rich import print
@@ -8,6 +8,8 @@ def main():
     warrior = Warrior("Joel", 20, 8, 3, Dice(6))
     mage = Mage("Lucas", 20, 8, 3, Dice(6))
     thief = Thief("Bastien", 20, 8, 3, Dice(6))
+    archer = Archer("Alexis", 20, 8, 3, Dice(6))
+
 
     chars: list[Character]=[warrior,mage,thief]
     stats={}
@@ -25,20 +27,24 @@ def main():
 
     print(stats)
 
-    for i in range(100):
-        print(f"Round n°{i+1}")
-        char1.regenerate()
-        char2.regenerate()
-        while char1.is_alive() and char2.is_alive():
-            char1.attack(char2)
-            char2.attack(char1)
-            # time.sleep(1)
-        if char1.is_alive():
-            stats[char1.get_name()]+=1
-        else:
-            stats[char2.get_name()]+=1
+    # for i in range(100):
+    #     print(f"Round n°{i+1}")
+    #     char1.regenerate()
+    #     char2.regenerate()
+    #     while char1.is_alive() and char2.is_alive():
+    #         char1.attack(char2)
+    #         char2.attack(char1)
+    #         # time.sleep(1)
+    #     if char1.is_alive():
+    #         stats[char1.get_name()]+=1
+    #     else:
+    #         stats[char2.get_name()]+=1
 
-    print(stats)
+    # print(stats)
+
+    while archer.is_alive() and mage.is_alive():
+        archer.attack(mage)
+        mage.attack(archer)
 
 
 if __name__ == "__main__":
