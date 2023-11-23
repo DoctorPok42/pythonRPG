@@ -87,6 +87,11 @@ class Archer(Character):
             return (damages, multiplier)
         else:
             return (damages,multiplier)
+        
+# illusionist 1/4 que l'adversaire nattaquera pas
+# berseker il attaque h24 l'adversaire
+# sage il peut faire couler son adversaire pendant x secondes (nb tiré dans le dé) lui infligeant des dégats
+
 
 
 if __name__ == "__main__":
