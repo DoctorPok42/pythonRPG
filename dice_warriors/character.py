@@ -89,9 +89,10 @@ class Archer(Character):
             return (damages,multiplier)
         
 # illusionist 1/4 que l'adversaire nattaquera pas
-# berseker il attaque h24 l'adversaire
-# sage il peut faire couler son adversaire pendant x secondes (nb tiré dans le dé) lui infligeant des dégats
-
+# ingénieur il a accès à plusieur armes qui font plus ou moins de dégats (choix de l'arme à chaque tour si le dé est pair il peut changer d'arme)
+# sage il peut faire couler son adversaire pendant x tour (nb tiré dans le dé) lui infligeant des dégats
+# paladin il peut se soigner de x points de vie  implémentation d'une méthode heal
+# rééquilibrer les classes les hp et les dégats et les défenses
 
 
 if __name__ == "__main__":
