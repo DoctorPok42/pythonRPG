@@ -89,7 +89,7 @@ class Archer(Character):
             return (damages,multiplier)
         
 # illusionist 1/4 que l'adversaire nattaquera pas
-# ingénieur il a accès à plusieur armes qui font plus ou moins de dégats (choix de l'arme à chaque tour si le dé est pair il peut changer d'arme)
+# ingénieur il a accès à plusieur armes qui font plus ou moins de dégats (choix de l'arme à chaque tour si le dé est pair il peut changer d'arme), implémentation d'une méthode change_weapon et donc d'une classe Weapon
 # sage il peut faire couler son adversaire pendant x tour (nb tiré dans le dé) lui infligeant des dégats
 # paladin il peut se soigner de x points de vie  implémentation d'une méthode heal
 # rééquilibrer les classes les hp et les dégats et les défenses
