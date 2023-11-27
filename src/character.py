@@ -121,7 +121,7 @@ class Paladin(Character):
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Paladin!"
         self._list_of_attack = {"sword": 3, "heal": 5}
-    
+
     def heal(self, heal_amount: int):
         self._current_health+= heal_amount
         if self._current_health > self._max_health:
@@ -136,6 +136,7 @@ def getAllCharacters() -> list:
     characters.append(Mage("Mage", 0, 0, 0, Dice(0)))
     characters.append(Thief("Thief", 0, 0, 0, Dice(0)))
     characters.append(Archer("Archer", 0, 0, 0, Dice(0)))
+    characters.append(Paladin("Paladin", 0, 0, 0, Dice(0)))
     return characters
 
 if __name__ == "__main__":
