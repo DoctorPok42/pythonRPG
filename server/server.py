@@ -9,7 +9,7 @@ parser.add_argument('-p', '--port', type=int, default=8080, help='Port to listen
 
 args = parser.parse_args()
 
-SERVER_IP = '185.157.247.171'
+SERVER_IP = '127.0.0.1'
 SERVER_PORT = args.port
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((SERVER_IP, SERVER_PORT))
@@ -88,7 +88,9 @@ def handle_client(client_socket, addr):
                     attacked_player['socket'].send(json.dumps({
                         "action": "attack",
                         "username": data['username'],
+                        "targetUser": data['targetUser'],
                         "attack": data['attack'],
+                        "points": data['points'],
                     }).encode())
 
         except Exception as e:
