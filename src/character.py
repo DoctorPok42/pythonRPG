@@ -122,11 +122,11 @@ class Paladin(Character):
         self.description = "I'm a Paladin!"
         self._list_of_attack = {"sword": 3, "heal": 5}
     
-    def heal(self):
-        self._current_health+= self._list_of_attack["heal"]
+    def heal(self, heal_amount: int):
+        self._current_health+= heal_amount
         if self._current_health > self._max_health:
             self._current_health = self._max_health
-        print(f"{self._name} heal himself with {self._list_of_attack['heal']} hp !")
+        print(f"{self._name} heal himself with {heal_amount} hp !")
 
 
 
