@@ -20,6 +20,7 @@ class Engine:
                 if (self._user.state == 'accepted' and self._user.myTurn):
                     self._user.panel.clear_panel()
                     self._character.show_healthbar()
+                    self._user._targetHealthbar.display_healthbar()
                     self._user.panel.update_panel_color("red bold")
                     self._user.panel.update_panel_subtitle("Your turn")
                     self._user.panel.update_panel_title("Choose an attack")
