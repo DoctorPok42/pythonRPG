@@ -1,10 +1,14 @@
 import socket
 import threading
 import json
+import curses
 from time import sleep
 
 from panel import Panels as p
 from character import Character
+from healthbar import Healthbar
+
+# curses.setupterm()
 
 class Client:
     def __init__(self, host: str, port: str, username: str, character) -> None:
@@ -15,6 +19,10 @@ class Client:
         self._username: str = username
         self._character: Character = character
         self.targetUser: str = None
+        self._targetUserHealth: int = 0
+        self._targetUserMaxHealth: int = 0
+        self._targetHealthbar = Healthbar(self.targetUser, self._targetUserMaxHealth, self._targetUserHealth)
+        self._targetHealthbar.create_healthbar()
         self.state: str = 'waiting'
         self.myTurn: bool = False
         self.panel = p("", "", (1, 3), "", "none")
@@ -60,10 +68,14 @@ class Client:
             elif (data['action'] == 'attack'):
                 print(f"{data['username']} attacked you with {data['attack']}")
                 self._character.defense(data['points'])
+                self.response_attack()
                 self.myTurn = True
 
-            elif (data['action'] == 'defend'):
-                self.defend(data['username'], data['defend'])
+            elif (data['action'] == 'response_attack'):
+                self._targetUserHealth = data['health']
+                self._targetUserMaxHealth = data['maxHealth']
+                self._targetHealthbar.update_health(self._targetUserHealth)
+                self._targetHealthbar.update_maxHealth(self._targetUserMaxHealth)
 
             else:
                 pass
@@ -94,6 +106,8 @@ class Client:
                 if (self.state == 'challenged'):
                     break
                 else:
+                    # print("Who do you want to challenge? ")
+                    # challenge = curses.initscr().getstr(0, 0, 15).decode()
                     challenge = input("Who do you want to challenge? ")
 
                     if (challenge.lower() not in self.waiting_list['username'] and len(challenge) > 0):
@@ -137,6 +151,7 @@ class Client:
 
     def challenge_accepted(self, targetUser: str, whoStarteFirst: bool) -> None:
         self.targetUser = targetUser
+        self._targetHealthbar.update_name(targetUser)
         self.state = 'accepted'
         self.myTurn = whoStarteFirst
         print("\033c", end="")
@@ -151,12 +166,13 @@ class Client:
             "points": self._character.attack(attack),
         }).encode())
 
-    def defend(self, targetUser: str, defend: str) -> None:
+    def response_attack(self) -> None:
         self._socket.send(json.dumps({
-            "action": "defend",
+            "action": "response_attack",
             "username": self._username,
-            "targetUser": targetUser,
-            "defend": defend,
+            "targetUser": self.targetUser,
+            "health": self._character.get_health(),
+            "maxHealth": self._character.get_max_health(),
         }).encode())
 
     def close(self):

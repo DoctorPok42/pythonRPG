@@ -30,6 +30,12 @@ class Character:
     def get_list_of_attack(self):
         return self._list_of_attack
 
+    def get_health(self):
+        return self._current_health
+
+    def get_max_health(self):
+        return self._max_health
+
     def get_defense_value(self):
         return self._defense_value
 
@@ -78,10 +84,6 @@ class Warrior(Character):
         self.description = "I'm a Warrior!"
         self._list_of_attack = {"sword": 5, "axe": 8}
 
-    def compute_damage(self, roll, target: Character):
-        print("🪓 Bonus: Axe damage (+3) in your face !")
-        return (super().compute_damage(roll, target)[0] + 3, 1)
-
 class Mage(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
@@ -91,18 +93,15 @@ class Mage(Character):
     def compute_defense(self, damages, roll):
         return (super().compute_defense(damages, roll))
 
-    def compute_damage(self, attackName: str, roll: int) -> int:
-        return super().compute_damage(attackName, roll)
-
 class Thief(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Thief!"
         self._list_of_attack = {"dagger": 9, "poison": 10}
 
-    def compute_damage(self, roll, target: Character):
-        print(f"🗡️ Bonus: Sneaky attack (ignore defense : +{target._defense_value} bonus) !")
-        return (super().compute_damage(roll, target)[0] + target.get_defense_value(), 1)
+    # def compute_damage(self, roll, target: Character):
+    #     print(f"🗡️ Bonus: Sneaky attack (ignore defense : +{target._defense_value} bonus) !")
+    #     return (super().compute_damage(roll, target)[0] + target.get_defense_value(), 1)
 
 class Archer(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
@@ -110,14 +109,14 @@ class Archer(Character):
         self.description = "I'm a Archer!"
         self._list_of_attack = {"bow": 12, "crossbow": 15}
 
-    def compute_damage(self, roll, target: Character):
-        dice = Dice(6).roll()
-        damages,multiplier = super().compute_damage(roll, target,2)
-        if dice == 6:
-            print(f"🏹 Bonus: Double attack (Add Double attack : +{damages*2} bonus) !")
-            return (damages, multiplier)
-        else:
-            return (damages,multiplier)
+    # def compute_damage(self, roll, target: Character):
+    #     dice = Dice(6).roll()
+    #     damages,multiplier = super().compute_damage(roll, target,2)
+    #     if dice == 6:
+    #         print(f"🏹 Bonus: Double attack (Add Double attack : +{damages*2} bonus) !")
+    #         return (damages, multiplier)
+    #     else:
+    #         return (damages,multiplier)
 
 class Paladin(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
