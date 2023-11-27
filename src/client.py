@@ -4,6 +4,7 @@ import json
 from time import sleep
 
 from panel import Panels as p
+from character import Character
 
 class Client:
     def __init__(self, host: str, port: str, username: str, character) -> None:
@@ -12,7 +13,7 @@ class Client:
         self._socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._waiting_list: list = []
         self._username: str = username
-        self._character = character
+        self._character: Character = character
         self.targetUser: str = None
         self.state: str = 'waiting'
         self.myTurn: bool = False
@@ -58,6 +59,7 @@ class Client:
 
             elif (data['action'] == 'attack'):
                 print(f"{data['username']} attacked you with {data['attack']}")
+                self._character.defense(data['points'])
                 self.myTurn = True
 
             elif (data['action'] == 'defend'):
@@ -140,11 +142,13 @@ class Client:
         print("\033c", end="")
 
     def attack(self, attack: str) -> None:
+        print(f"You attacked {self.targetUser} with {attack}")
         self._socket.send(json.dumps({
             "action": "attack",
             "username": self._username,
             "targetUser": self.targetUser,
             "attack": attack,
+            "points": self._character.attack(attack),
         }).encode())
 
     def defend(self, targetUser: str, defend: str) -> None:
