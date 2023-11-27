@@ -1,7 +1,5 @@
 import random
 
-print("\n")
-
 class Dice:
     
     def __init__(self, faces=6):

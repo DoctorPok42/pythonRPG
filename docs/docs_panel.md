@@ -6,16 +6,16 @@ Voici les méthodes implémanté dans la classe <span style="color:magenta">Pane
 
 <span style="color:green">
 
-constructeur()  
-create_panel()  
-display_panel()  
-update_panel_text(<span style="color:lightblue">text</span>)  
-update_panel_title(<span style="color:lightblue">title</span>)  
-update_panel_subtitle(<span style="color:lightblue">subtitle</span>)  
+constructeur()
+create_panel()
+display_panel()
+update_panel_text(<span style="color:lightblue">text</span>)
+update_panel_title(<span style="color:lightblue">title</span>)
+update_panel_subtitle(<span style="color:lightblue">subtitle</span>)
 
 </span>
 
-### Constructeur
+## Constructeur
 
 Le constructeur a besoin de plusieurs arguments :
 
@@ -29,10 +29,10 @@ Dans votre code vous devrez créer votre instance de la classe Panels de cette m
 ```python
 from panel import Panels
 
-panel_name = Panels(text, title, padding, subtitle, border) 
+panel_name = Panels(text, title, padding, subtitle, border)
 ```
 
-### Create Panel
+## Create Panel
 
 La méthode create_panel() permet de créer le panel en fonction des valeurs qui ont été donné dans le constructeur plus tôt
 
@@ -41,7 +41,8 @@ Pour l'utiliser dans votre code vous devez déjà avoir déclaré une instance d
 ```python
 panel_name.create_panel()
 ```
-### Display Panel
+
+## Display Panel
 
 La méthode display_panel() permet d'afficher le panel
 
@@ -51,7 +52,7 @@ Voici comment l'utiliser dans le code :
 panel_name.display_panel()
 ```
 
-### Update Panel Text
+## Update Panel Text
 
 La méthode <span style="color:green">update_panel_text(<span style="color:lightblue">text</span>)</span> permet de changer le contenu du panel avec le texte fourni
 
@@ -61,7 +62,7 @@ Voici coment l'utiliser :
 panel_name.update_panel_name(text)
 ```
 
-### Update Panel Title
+## Update Panel Title
 
 La méthode <span style="color:green">update_panel_title(<span style="color:lightblue">title</span>)</span> permet de changer le titre du panel avec le texte fourni
 
@@ -71,7 +72,7 @@ Voici coment l'utiliser :
 panel_name.update_panel_title(subtitle)
 ```
 
-### Update Panel Subtitle
+## Update Panel Subtitle
 
 La méthode <span style="color:green">update_panel_subtitle(<span style="color:lightblue">subtitle</span>)</span> permet de changer le sous-titre du panel avec le texte fourni
 
