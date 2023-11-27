@@ -131,12 +131,13 @@ class Paladin(Character):
         print(f"{self._name} heal himself with {heal_amount} hp !")
 
 def getAllCharacters() -> list:
-    characters: list = []
-    characters.append(Warrior("Warrior", 30, 15, 5, Dice(6)))
-    characters.append(Mage("Mage", 20, 10, 3, Dice(6)))
-    characters.append(Thief("Thief", 25, 12, 4, Dice(6)))
-    characters.append(Archer("Archer", 20, 12, 5, Dice(6)))
-    characters.append(Paladin("Paladin", 25, 15, 5, Dice(6)))
+    characters: list = [
+        Warrior("Gerard", 20, 8, 3, Dice(6)),
+        Mage("Lisa", 20, 8, 3, Dice(6)),
+        Thief("Thief", 20, 8, 3, Dice(6)),
+        Archer("Archer", 20, 8, 3, Dice(6)),
+        Paladin("Paladin", 20, 8, 3, Dice(6)),
+    ]
     return characters
 
 if __name__ == "__main__":
