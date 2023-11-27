@@ -75,7 +75,7 @@ class Warrior(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Warrior!"
-        self._list_of_attack = {"sword": 3, "axe": 5}
+        self._list_of_attack = {"sword": 5, "axe": 8}
 
     def compute_damage(self, roll, target: Character):
         print("🪓 Bonus: Axe damage (+3) in your face !")
@@ -85,7 +85,7 @@ class Mage(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Mage!"
-        self._list_of_attack = {"fireball": 3, "thunder": 5}
+        self._list_of_attack = {"fireball": 10, "thunder": 12}
 
     def compute_defense(self, damages, roll, attacker: Character):
         print("🛡️ Bonus: Magic armor (-3 wounds) !")
@@ -95,7 +95,7 @@ class Thief(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Thief!"
-        self._list_of_attack = {"dagger": 3, "poison": 5}
+        self._list_of_attack = {"dagger": 9, "poison": 10}
 
     def compute_damage(self, roll, target: Character):
         print(f"🗡️ Bonus: Sneaky attack (ignore defense : +{target._defense_value} bonus) !")
@@ -105,7 +105,7 @@ class Archer(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Archer!"
-        self._list_of_attack = {"bow": 3, "crossbow": 5}
+        self._list_of_attack = {"bow": 12, "crossbow": 15}
 
     def compute_damage(self, roll, target: Character):
         dice = Dice(6).roll()
@@ -120,23 +120,21 @@ class Paladin(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Paladin!"
-        self._list_of_attack = {"sword": 3, "heal": 5}
+        self._list_of_attack = {"sword": 15, "heal": 10}
 
     def heal(self, heal_amount: int):
         self._current_health+= heal_amount
         if self._current_health > self._max_health:
             self._current_health = self._max_health
-        print(f"{self._name} heal himself with {heal_amount} hp !")
-
-
+        print(f"{self._name} heal himself with {heal_amount} hp !")  
 
 def getAllCharacters() -> list:
     characters: list = []
-    characters.append(Warrior("Warrior", 0, 0, 0, Dice(0)))
-    characters.append(Mage("Mage", 0, 0, 0, Dice(0)))
-    characters.append(Thief("Thief", 0, 0, 0, Dice(0)))
-    characters.append(Archer("Archer", 0, 0, 0, Dice(0)))
-    characters.append(Paladin("Paladin", 0, 0, 0, Dice(0)))
+    characters.append(Warrior("Warrior", 30, 15, 5, Dice(0)))
+    characters.append(Mage("Mage",16,10,10  Dice(0)))
+    characters.append(Thief("Thief",20,9,5 Dice(0)))
+    characters.append(Archer("Archer", 20, 12, 5, Dice(0)))
+    characters.append(Paladin("Paladin", 25, 15,7 Dice(0)))
     return characters
 
 if __name__ == "__main__":
