@@ -132,8 +132,8 @@ class Paladin(Character):
 
 def getAllCharacters() -> list:
     characters: list = [
-        Warrior("Gerard", 20, 8, 3, Dice(6)),
-        Mage("Lisa", 20, 8, 3, Dice(6)),
+        Warrior("Warrior", 20, 8, 3, Dice(6)),
+        Mage("Mage", 20, 8, 3, Dice(6)),
         Thief("Thief", 20, 8, 3, Dice(6)),
         Archer("Archer", 20, 8, 3, Dice(6)),
         Paladin("Paladin", 20, 8, 3, Dice(6)),
