@@ -116,11 +116,18 @@ class Archer(Character):
         else:
             return (damages,multiplier)
 
-# illusionist 1/4 que l'adversaire nattaquera pas
-# ingénieur il a accès à plusieur armes qui font plus ou moins de dégats (choix de l'arme à chaque tour si le dé est pair il peut changer d'arme), implémentation d'une méthode change_weapon et donc d'une classe Weapon
-# sage il peut faire couler son adversaire pendant x tour (nb tiré dans le dé) lui infligeant des dégats
-# paladin il peut se soigner de x points de vie  implémentation d'une méthode heal
-# rééquilibrer les classes les hp et les dégats et les défenses
+class Paladin(Character):
+    def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
+        super().__init__(name, max_health, attack, defense, dice)
+        self.description = "I'm a Paladin!"
+        self._list_of_attack = {"sword": 3, "heal": 5}
+    
+    def heal(self, heal_amount: int):
+        self._current_health+= heal_amount
+        if self._current_health > self._max_health:
+            self._current_health = self._max_health
+        print(f"{self._name} heal himself with {heal_amount} hp !")
+
 
 
 def getAllCharacters() -> list:
