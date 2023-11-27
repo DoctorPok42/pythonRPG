@@ -2,14 +2,18 @@ import socket
 import threading
 import argparse
 import json
+import os
 from random import randint
+from dotenv import load_dotenv
+
+load_dotenv()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', '--port', type=int, default=8080, help='Port to listen on')
 
 args = parser.parse_args()
 
-SERVER_IP = '127.0.0.1'
+SERVER_IP = os.getenv("SERVER_HOST")
 SERVER_PORT = args.port
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((SERVER_IP, SERVER_PORT))
