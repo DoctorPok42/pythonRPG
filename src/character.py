@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dice import Dice
+from healthbar import Healthbar
 from rich import print
 
 class Character:
@@ -12,6 +13,8 @@ class Character:
         self._attack_value = attack
         self._defense_value = defense
         self._dice = dice
+        self._healthbar = Healthbar(self._name, self._max_health, self._current_health)
+        self._healthbar.create_healthbar()
         self._list_of_attack = {}
 
     def get_name(self):
@@ -19,6 +22,7 @@ class Character:
 
     def set_name(self, name: str):
         self._name = name
+        self._healthbar.update_name(name)
 
     def get_description(self):
         return self.description
@@ -46,28 +50,25 @@ class Character:
         self.show_healthbar()
 
     def show_healthbar(self):
-        missing_hp = self._max_health - self._current_health
-        healthbar = f"{self._name} HP: {self._current_health}/{self._max_health} [green]{self._current_health * '█'}[/green][red]{missing_hp * '█'}[/red]"
-        print(healthbar)
+        self._healthbar.update_health(self._current_health)
+        self._healthbar.display_healthbar()
 
-    def compute_damage(self, roll, target: Character, bonus=1):
-        return (self._attack_value + roll, bonus)
+    def compute_damage(self, attackName: str, roll: int) -> int:
+        return (self._list_of_attack[attackName] + roll)
 
-    def attack(self, target: Character):
-        if (not self.is_alive() or not target.is_alive()):
+    def attack(self, attack: str) -> int:
+        if (not self.is_alive()):
             return
         roll = self._dice.roll()
-        damages,multiplier = self.compute_damage(roll, target)
-        print(f"{self._name} attack {target.get_name()} with {damages} damages in your face ! "+ (f"(attack: {self._attack_value*multiplier} + roll: {roll*multiplier})" if multiplier>1  else f"(attack: {self._attack_value} + roll: {roll})"))
-        target.defense(damages,self)
+        damages = self.compute_damage(attack, roll)
+        return damages
 
-    def compute_defense(self, damages, roll, attacker: Character,bonus=1):
-        return (damages - self._defense_value - roll, bonus)
+    def compute_defense(self, damages: int, roll: int) -> int:
+        return (damages - self._defense_value - roll)
 
-    def defense(self, damages, attacker: Character):
+    def defense(self, damages: int) -> None:
         roll = self._dice.roll()
-        wounds,multiplier = self.compute_defense(damages, roll,attacker)
-        print(f"{self._name} take {wounds} wounds from {attacker.get_name()} in his face ! (damages: {damages} - defense: {self._defense_value} - roll: {roll})")
+        wounds = self.compute_defense(damages, roll)
         self.decrease_health(wounds)
 
 
@@ -87,9 +88,11 @@ class Mage(Character):
         self.description = "I'm a Mage!"
         self._list_of_attack = {"fireball": 10, "thunder": 12}
 
-    def compute_defense(self, damages, roll, attacker: Character):
-        print("🛡️ Bonus: Magic armor (-3 wounds) !")
-        return (super().compute_defense(damages, roll, attacker)[0] - 3, 1)
+    def compute_defense(self, damages, roll):
+        return (super().compute_defense(damages, roll))
+
+    def compute_damage(self, attackName: str, roll: int) -> int:
+        return super().compute_damage(attackName, roll)
 
 class Thief(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
@@ -126,15 +129,15 @@ class Paladin(Character):
         self._current_health+= heal_amount
         if self._current_health > self._max_health:
             self._current_health = self._max_health
-        print(f"{self._name} heal himself with {heal_amount} hp !")  
+        print(f"{self._name} heal himself with {heal_amount} hp !")
 
 def getAllCharacters() -> list:
     characters: list = []
-    characters.append(Warrior("Warrior", 30, 15, 5, Dice(0)))
-    characters.append(Mage("Mage",16,10,10  Dice(0)))
-    characters.append(Thief("Thief",20,9,5 Dice(0)))
-    characters.append(Archer("Archer", 20, 12, 5, Dice(0)))
-    characters.append(Paladin("Paladin", 25, 15,7 Dice(0)))
+    characters.append(Warrior("Warrior", 30, 15, 5, Dice(6)))
+    characters.append(Mage("Mage", 20, 10, 3, Dice(6)))
+    characters.append(Thief("Thief", 25, 12, 4, Dice(6)))
+    characters.append(Archer("Archer", 20, 12, 5, Dice(6)))
+    characters.append(Paladin("Paladin", 25, 15, 5, Dice(6)))
     return characters
 
 if __name__ == "__main__":

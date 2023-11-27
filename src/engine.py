@@ -7,6 +7,7 @@ class Engine:
         self._user.connect()
         self._user.join()
         self._character = character
+        self._character.set_name(username)
         self._list_of_attack: dict = character.get_list_of_attack()
 
         self._user.panel.clear_panel()
@@ -17,6 +18,8 @@ class Engine:
         while True:
             try:
                 if (self._user.state == 'accepted' and self._user.myTurn):
+                    self._user.panel.clear_panel()
+                    self._character.show_healthbar()
                     self._user.panel.update_panel_color("red bold")
                     self._user.panel.update_panel_subtitle("Your turn")
                     self._user.panel.update_panel_title("Choose an attack")
@@ -28,8 +31,9 @@ class Engine:
                         self._user.close()
                         break
                     if (attack not in self._list_of_attack and len(attack) > 0):
-                        print("Attack not in list")
-                        continue
+                        while (attack not in self._list_of_attack):
+                            print("Attack not in list")
+                            attack = input("Choose an attack: ")
                     else:
                         self._user.attack(attack)
                         self._user.myTurn = False
