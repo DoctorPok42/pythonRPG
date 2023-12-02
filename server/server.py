@@ -25,6 +25,9 @@ print('The server is listening on {}:{}'.format(SERVER_IP, SERVER_PORT))
 waiting_players = []
 playersInGame = []
 
+def check_if_target(username):
+    return next((p for p in playersInGame if p['username'] == username), None)
+
 def handle_client(client_socket, addr):
     print('Connection established with {}'.format(addr))
 
@@ -43,6 +46,8 @@ def handle_client(client_socket, addr):
                     "character": data['character'],
                     "socket": client_socket,
                     "addr": addr,
+                    "health": data['health'],
+                    "maxHealth": data['maxHealth'],
                 }
                 waiting_players.append(dataUser)
                 send_waiting_list()
@@ -61,6 +66,8 @@ def handle_client(client_socket, addr):
                 whoStarteFirst = randint(0, 1)
                 if (data['response'] == 'y' and challenger):
                     player = next((p for p in waiting_players if p['username'] == data['username']), None)
+                    player['targetUser'] = data['targetUser']
+                    challenger['targetUser'] = data['username']
                     playersInGame.append(player)
                     playersInGame.append(challenger)
 
@@ -73,6 +80,8 @@ def handle_client(client_socket, addr):
                         "targetUser": data['targetUser'],
                         "response": data['response'],
                         "whoStarteFirst": whoStarteFirst,
+                        "targetHealth": challenger['health'],
+                        "targetMaxHealth": challenger['maxHealth'],
                     }).encode())
                     print('Challenge accepted between {} and {}'.format(data['targetUser'], data['username']))
                 else:
@@ -83,18 +92,43 @@ def handle_client(client_socket, addr):
                     "targetUser": data['username'],
                     "response": data['response'],
                     "whoStarteFirst": not whoStarteFirst,
+                    "targetHealth": player['health'],
+                    "targetMaxHealth": player['maxHealth'],
                 }).encode())
 
             if (data['action'] == 'attack'):
-                print('{} attacked {} with {}'.format(data['username'], data['targetUser'], data['attack']))
+                print('{} attacked {} with {} ({})'.format(data['username'], data['targetUser'], data['attack'], data['points']))
                 attacked_player = next((p for p in playersInGame if p['username'] == data['targetUser']), None)
                 if (attacked_player):
                     attacked_player['socket'].send(json.dumps({
                         "action": "attack",
                         "username": data['username'],
-                        "targetUser": data['targetUser'],
                         "attack": data['attack'],
                         "points": data['points'],
+                    }).encode())
+
+            if (data['action'] == 'response_attack'):
+                target_player = next((p for p in playersInGame if p['username'] == data['targetUser']), None)
+                player = next((p for p in playersInGame if p['username'] == data['username']), None)
+                player['health'] = data['health']
+                if (player['health'] <= 0):
+                    player['socket'].send(json.dumps({
+                        "action": "game_over",
+                        "username": data['username'],
+                    }).encode())
+                    target_player['socket'].send(json.dumps({
+                        "action": "win",
+                        "username": data['targetUser'],
+                    }).encode())
+                    playersInGame.remove(player)
+                    playersInGame.remove(target_player)
+                    print('{} won between {} and {}'.format(data['targetUser'], data['targetUser'], data['username']))
+                else:
+                    target_player['socket'].send(json.dumps({
+                        "action": "response_attack",
+                        "username": data['username'],
+                        "health": data['health'],
+                        "maxHealth": data['maxHealth'],
                     }).encode())
 
         except Exception as e:

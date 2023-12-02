@@ -7,6 +7,7 @@ from time import sleep
 from panel import Panels as p
 from character import Character
 from healthbar import Healthbar
+from target import Target
 
 # curses.setupterm()
 
@@ -18,11 +19,7 @@ class Client:
         self._waiting_list: list = []
         self._username: str = username
         self._character: Character = character
-        self.targetUser: str = None
-        self._targetUserHealth: int = 0
-        self._targetUserMaxHealth: int = 0
-        self._targetHealthbar = Healthbar(self.targetUser, self._targetUserMaxHealth, self._targetUserHealth)
-        self._targetHealthbar.create_healthbar()
+        self._targetUser = Target("", 0, 0)
         self.state: str = 'waiting'
         self.myTurn: bool = False
         self.panel = p("", "", (1, 3), "", "none")
@@ -38,6 +35,8 @@ class Client:
             "action": "join",
             "username": self._username,
             "character": self._character.get_name(),
+            "maxHealth": self._character.get_max_health(),
+            "health": self._character.get_health(),
         }).encode())
         self.state = 'joined'
 
@@ -54,6 +53,8 @@ class Client:
 
             elif (data['action'] == 'challenge_response'):
                 if (data['response'] == 'y'):
+                    self._targetUser.change_health(data['targetHealth'])
+                    self._targetUser.change_max_health(data['targetMaxHealth'])
                     self.challenge_accepted(data['targetUser'], data['whoStarteFirst'])
                 else:
                     self.state = 'joined'
@@ -72,10 +73,28 @@ class Client:
                 self.myTurn = True
 
             elif (data['action'] == 'response_attack'):
-                self._targetUserHealth = data['health']
-                self._targetUserMaxHealth = data['maxHealth']
-                self._targetHealthbar.update_health(self._targetUserHealth)
-                self._targetHealthbar.update_maxHealth(self._targetUserMaxHealth)
+                self._targetUser.change_health(data['health'])
+                print("\033c", end="")
+                self._character.show_healthbar()
+                self._targetUser.show_healthbar()
+
+            elif (data['action'] == 'win'):
+                self.state = 'win'
+                self.panel.update_panel_title("Congratulations!")
+                self.panel.update_panel_color("green bold")
+                self.panel.update_panel_text("You won the game! 🎉")
+                self.panel.update_panel_subtitle("")
+                self.panel.clear_and_display_panel()
+                self.close()
+
+            elif (data['action'] == 'game_over'):
+                self.state = 'game_over'
+                self.panel.update_panel_title("Game over...")
+                self.panel.update_panel_color("red bold")
+                self.panel.update_panel_text("You lost the game! 😢")
+                self.panel.update_panel_subtitle("")
+                self.panel.clear_and_display_panel()
+                self.close()
 
             else:
                 pass
@@ -151,10 +170,12 @@ class Client:
 
     def challenge_accepted(self, targetUser: str, whoStarteFirst: bool) -> None:
         self.targetUser = targetUser
-        self._targetHealthbar.update_name(targetUser)
-        self.state = 'accepted'
-        self.myTurn = whoStarteFirst
+        self._targetUser.change_name(targetUser)
         print("\033c", end="")
+        self._character.show_healthbar()
+        self._targetUser.show_healthbar()
+        self.myTurn = whoStarteFirst
+        self.state = 'accepted'
 
     def attack(self, attack: str) -> None:
         print(f"You attacked {self.targetUser} with {attack}")
