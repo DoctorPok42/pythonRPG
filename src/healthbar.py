@@ -19,6 +19,9 @@ class Healthbar:
     def update_name(self, name):
         self._name = name
 
+    def update_color(self, color):
+        self._progress_bar.complete_style = color
+
     def create_healthbar(self):
         self._progress_bar=ProgressBar(self._maxHealth, self._Health,40, style="white", complete_style="red", finished_style="red",)
 

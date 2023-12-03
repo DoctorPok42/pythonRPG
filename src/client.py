@@ -67,16 +67,13 @@ class Client:
                 self.getWaitingList()
 
             elif (data['action'] == 'attack'):
-                print(f"{data['username']} attacked you with {data['attack']}")
+                self._targetUser._attack = data['attack']
                 self._character.defense(data['points'])
                 self.response_attack()
                 self.myTurn = True
 
             elif (data['action'] == 'response_attack'):
                 self._targetUser.change_health(data['health'])
-                print("\033c", end="")
-                self._character.show_healthbar()
-                self._targetUser.show_healthbar()
 
             elif (data['action'] == 'win'):
                 self.state = 'win'
@@ -178,7 +175,6 @@ class Client:
         self.state = 'accepted'
 
     def attack(self, attack: str) -> None:
-        print(f"You attacked {self.targetUser} with {attack}")
         self._socket.send(json.dumps({
             "action": "attack",
             "username": self._username,

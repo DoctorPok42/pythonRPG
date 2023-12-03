@@ -7,6 +7,7 @@ class Target:
         self._health = health
         self._healthbar = Healthbar(self._name, self._max_health, self._health)
         self._healthbar.create_healthbar()
+        self._attack: str = ""
 
     def get_name(self):
         return self._name

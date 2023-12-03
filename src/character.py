@@ -17,6 +17,9 @@ class Character:
         self._healthbar.create_healthbar()
         self._list_of_attack = {}
 
+    def __str__(self):
+        return f"attack: {self._attack_value} and defense: {self._defense_value}"
+
     def get_name(self):
         return self._name
 
@@ -39,15 +42,13 @@ class Character:
     def get_defense_value(self):
         return self._defense_value
 
-    def __str__(self):
-        return f"attack: {self._attack_value} and defense: {self._defense_value}"
-
     def is_alive(self):
-        # return bool(self._current_health)
         return self._current_health > 0
 
-    def regenerate(self):
-        self._current_health = self._max_health
+    def regenerate(self, amount):
+        if (self._current_health + amount > self._max_health):
+            amount = self._max_health - self._current_health
+        self._current_health += amount
 
     def decrease_health(self, amount):
         if (self._current_health - amount < 0):
@@ -55,7 +56,7 @@ class Character:
         self._current_health -= amount
         self.show_healthbar()
 
-    def show_healthbar(self):
+    def show_healthbar(self) -> None:
         self._healthbar.update_health(self._current_health)
         self._healthbar.display_healthbar()
 
@@ -82,62 +83,64 @@ class Warrior(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Warrior!"
-        self._list_of_attack = {"sword": 5, "axe": 8}
+        self._list_of_attack = {"sword": 7, "axe": 10}
+
+    def compute_damage(self, attackName: str, roll: int) -> int:
+        return super().compute_damage(attackName, roll)+3 if roll==3 else super().compute_damage(attackName, roll)
 
 class Mage(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Mage!"
-        self._list_of_attack = {"fireball": 10, "thunder": 12}
+        self._list_of_attack = {"fireball": 12, "thunder": 14}
 
     def compute_defense(self, damages, roll):
-        return (super().compute_defense(damages, roll))
+        return super().compute_defense(damages, roll)//2 if roll==4 else super().compute_defense(damages, roll)
 
 class Thief(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Thief!"
-        self._list_of_attack = {"dagger": 9, "poison": 10}
-
-    # def compute_damage(self, roll, target: Character):
-    #     print(f"🗡️ Bonus: Sneaky attack (ignore defense : +{target._defense_value} bonus) !")
-    #     return (super().compute_damage(roll, target)[0] + target.get_defense_value(), 1)
+        self._list_of_attack = {"dagger": 11, "poison": 12}
 
 class Archer(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Archer!"
-        self._list_of_attack = {"bow": 12, "crossbow": 15}
+        self._list_of_attack = {"bow": 14, "crossbow": 17}
 
-    # def compute_damage(self, roll, target: Character):
-    #     dice = Dice(6).roll()
-    #     damages,multiplier = super().compute_damage(roll, target,2)
-    #     if dice == 6:
-    #         print(f"🏹 Bonus: Double attack (Add Double attack : +{damages*2} bonus) !")
-    #         return (damages, multiplier)
-    #     else:
-    #         return (damages,multiplier)
+    def compute_damage(self, attackName: str, roll: int) -> int:
+        if roll == 4:
+            return (super().compute_damage(attackName, roll)*2)
+        elif roll == 1:
+            return (super().compute_damage(attackName, roll)//2)
+        else:
+            return super().compute_damage(attackName, roll)
 
 class Paladin(Character):
     def __init__(self, name: str, max_health: int, attack: int, defense: int, dice) -> None:
         super().__init__(name, max_health, attack, defense, dice)
         self.description = "I'm a Paladin!"
-        self._list_of_attack = {"sword": 15, "heal": 10}
+        self._list_of_attack = {"sword": 18, "heal": 10}
 
     def heal(self, heal_amount: int):
         self._current_health+= heal_amount
         if self._current_health > self._max_health:
             self._current_health = self._max_health
-        print(f"{self._name} heal himself with {heal_amount} hp !")
+
+    def compute_defense(self, damages: int, roll: int) -> int:
+        if roll==5:
+            return (super().compute_defense(damages, roll)//3)
+        else:
+            return super().compute_defense(damages, roll)
 
 def getAllCharacters() -> list:
-    characters: list = [
-        Warrior("Warrior", 20, 8, 3, Dice(6)),
-        Mage("Mage", 20, 8, 3, Dice(6)),
-        Thief("Thief", 20, 8, 3, Dice(6)),
-        Archer("Archer", 20, 8, 3, Dice(6)),
-        Paladin("Paladin", 20, 8, 3, Dice(6)),
-    ]
+    characters: list = []
+    characters.append(Warrior("Warrior", 35, 15, 5, Dice(3)))
+    characters.append(Mage("Mage", 25, 10, 3, Dice(4)))
+    characters.append(Thief("Thief", 28, 12, 4, Dice(6)))
+    characters.append(Archer("Archer", 22, 12, 5, Dice(4)))
+    characters.append(Paladin("Paladin", 30, 15, 5, Dice(5)))
     return characters
 
 if __name__ == "__main__":
