@@ -124,7 +124,7 @@ class Paladin(Character):
         self._list_of_attack = {"sword": 18, "heal": 10}
 
     def heal(self, heal_amount: int):
-        self._current_health+= heal_amount
+        self._current_health += heal_amount
         if self._current_health > self._max_health:
             self._current_health = self._max_health
 

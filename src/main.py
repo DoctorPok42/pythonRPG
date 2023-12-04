@@ -39,7 +39,7 @@ if __name__ == '__main__':
     panel.clear_and_display_panel()
     print("Choose a character:\n")
     for character in characters:
-        print(f"{character.get_name()} - {character.get_description()} ({character})")
+        print(f"[white bold]{character.get_name()}[/white bold] - {character.get_description()} ({character})")
 
     characterChoice = None
 

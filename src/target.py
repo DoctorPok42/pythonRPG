@@ -24,6 +24,8 @@ class Target:
 
     def change_health(self, health: int):
         self._health = health
+        if (self._health > self._max_health):
+            self._health = self._max_health
         self._healthbar.update_health(health)
 
     def change_max_health(self, max_health: int):
