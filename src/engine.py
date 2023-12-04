@@ -20,25 +20,31 @@ class Engine:
         while (self._user.state == "accepted" and
                not self._user.myTurn and
                self._user._character.get_health() < self._user._character.get_max_health()):
-            if (datetime.datetime.now() - self._last_attack).total_seconds() > 20:
-                self._character.regenerate(int(self._character.get_max_health() / 10))
+            if (datetime.datetime.now() - self._last_attack).total_seconds() > 10:
+                self._character.regenerate(int(self._character.get_max_health() / 5))
                 self._last_attack = datetime.datetime.now()
                 self._character._healthbar.update_color("green")
                 self._user.panel.clear_panel()
                 self._character.show_healthbar()
                 self._user._targetUser.show_healthbar()
-                self._user.panel.update_panel_color("purple bold")
+                if (self._user._character.get_health() < self._user._character.get_max_health()):
+                    self._user.panel.update_panel_color("purple bold")
+                    self._user.panel.update_panel_text("You regenerated 5% of your health")
+                else:
+                    self._user.panel.update_panel_color("red bold")
+                    self._user.panel.update_panel_text("")
                 self._user.panel.update_panel_subtitle("Opponent's turn")
                 self._user.panel.update_panel_title("Waiting for opponent's attack...")
-                self._user.panel.update_panel_text("You regenerated 10% of your health")
                 self._user.panel.display_panel()
-                self._last_attack = datetime.datetime.now() + datetime.timedelta(seconds=5)
+                self._last_attack = datetime.datetime.now() - datetime.timedelta(seconds=3)
 
     def start(self):
         if (self._user is None):
             return
         while True:
             try:
+                self._user.receive()
+
                 if (self._user.state == 'accepted' and self._user.myTurn):
                     self._user.panel.clear_panel()
                     self._character._healthbar.update_color("red")
@@ -77,8 +83,6 @@ class Engine:
 
                     check_for_regenerate_health = threading.Thread(target=self.regenerate_health)
                     check_for_regenerate_health.start()
-
-                self._user.receive()
 
             except Exception as e:
                 print(f"Error receiving data: {e}")

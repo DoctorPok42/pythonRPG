@@ -1,15 +1,12 @@
 import socket
 import threading
 import json
-import curses
 from time import sleep
 
 from panel import Panels as p
 from character import Character
 from healthbar import Healthbar
 from target import Target
-
-# curses.setupterm()
 
 class Client:
     def __init__(self, host: str, port: str, username: str, character) -> None:
@@ -67,8 +64,12 @@ class Client:
                 self.getWaitingList()
 
             elif (data['action'] == 'attack'):
-                self._targetUser._attack = data['attack']
-                self._character.defense(data['points'])
+                if (data['attack'] == "heal"):
+                    self._targetUser._attack = ""
+                    self._targetUser.change_health(self._targetUser.get_health() + data['points'])
+                else:
+                    self._targetUser._attack = data['attack']
+                    self._character.defense(data['points'])
                 self.response_attack()
                 self.myTurn = True
 
@@ -122,8 +123,6 @@ class Client:
                 if (self.state == 'challenged'):
                     break
                 else:
-                    # print("Who do you want to challenge? ")
-                    # challenge = curses.initscr().getstr(0, 0, 15).decode()
                     challenge = input("Who do you want to challenge? ")
 
                     if (challenge.lower() not in self.waiting_list['username'] and len(challenge) > 0):
@@ -175,6 +174,10 @@ class Client:
         self.state = 'accepted'
 
     def attack(self, attack: str) -> None:
+        if (attack == "heal"):
+            self._character.heal(self._character._list_of_attack[attack])
+            self._character._healthbar.update_health(self._character.get_health())
+
         self._socket.send(json.dumps({
             "action": "attack",
             "username": self._username,
